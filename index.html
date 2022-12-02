@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <link rel="stylesheet" href="style.css" />
+    <title>Gestion d'articles</title>
+</head>
+<body>
+    <form id="form">
+        
+    <input type="text" placeholder="Nom" autocomplete="off" id="nom" />
+    <p id="Name"></p>
+    
+    <div id="error1"></div>
+
+    <select id="selec" name="select">
+        <option value="">choisie la marque</option>
+        <option value="">Oriflame</option>
+        <option value="">Fenty Beauty</option>
+        <option value="">R.E.M. Beauty</option>
+    </select>
+    <div id="error2"></div>
+
+    <input type="text" placeholder="prix" autocomplete="off" id="prix" />
+    <div id="error3"></div>
+
+    <input type="date" placeholder="date" autocomplete="off" id="date" />
+    <div id="error4"></div>
+
+    <select id="sele" autocomplete="off">
+        <option value="">choisie le type</option>
+        <option value="">hygiène et toilette</option>
+        <option value="">soins esthétiques</option>
+        <option value="">produits solaires</option>
+        <option value="">beauté des mains et des pieds</option>
+        <option value="">produits de maquillage</option>
+        <option value="">ntretien capillaires</option>
+        <option value="">parfums</option>
+    </select>
+    <div id="error5"></div>
+
+    <div class="promotion">
+        <label>Promoion : </label>
+        <label for="fam">oui</label>
+        <input id="fam" name="fam" type="radio" value="OUI" />
+        <label for="mas">nn</label>
+        <input id="mas" name="fam" type="radio" value="NON" />
+    </div>
+    <div id="error6"></div>
+
+    <input type="submit" id="valider" value="Ajouter"/>
+    <!-- <button onclick = "modifier()" >edit</button> -->
+    <input type="button" onclick="modifier()" value="MODIFIER">
+    <div id="error"></div>
+    </form>
+    <div class="tbl-header">
+    <table id="table" >
+        <thead>
+        <tr>
+            <th>name</th>
+            <th>marque</th>
+            <th>prix</th>
+            <th>date</th>
+            <th>type</th>
+            <th>promotion</th>
+            <th id="th">action</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    </div>
+    <!-- <div id="allUsers"></div> -->
+
+    <script src="script.js"></script>
+</body>
+</html>
