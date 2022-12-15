@@ -132,3 +132,70 @@ const formEl = document.querySelector("form");
         
             // }
             // }
+
+            if(localStorage.product != null){
+                dataList = JSON.parse(localStorage.product);
+            }
+            else{
+                dataList = [];
+            } 
+
+            
+            function stocker(){
+
+                let newList = {
+            
+                    nom : nom.value ,
+                    selec : selec.value ,
+                    prix : prix.value ,
+                    date : date.value ,
+                    sele : sele.value ,
+                    fam : fam,
+                    mas : mas,
+                }
+            
+            
+                dataList.push(newList);
+            
+                localStorage.setItem('product' , JSON.stringify(dataList));
+            
+
+            }
+
+            function Table(){
+
+
+                let table = '';
+                for( let i = 0 ; i < dataList.length ; i++ ){
+                    table +=   ` 
+                    <tr>
+                    <td>${dataList[i].nom}</td>
+                    <td>${ dataList[i].selec}</td>
+                    <td>${ dataList[i].prix}</td>
+                    <td>${ dataList[i].date}</td>
+                    <td>${dataList[i].sele}</td>
+                    <td>${dataList[i].fam}${dataList[i].mas}</td>
+                    <td><button class="deleteBtn">Delete</button></td>
+                    <td><button class="edit">Edit</button></td>
+                    </tr>
+            `
+            }
+            
+                document.getElementById("tbody").innerHTML = table;
+            
+            }
+
+            function supprimer(i){
+                dataList.splice(i,1);
+                localStorage.product = JSON.stringify(dataList);
+                Table();
+            }
+            function clear(){
+                document.getElementById("nom").value = "";
+                document.getElementById("selec").value = "";
+                document.getElementById("date").value = "";
+                document.getElementById("prix").value = "";
+                document.getElementById("sele").value = "";
+                document.getElementById("fam").checked = false;
+                document.getElementById("mas").checked = false;
+            }
