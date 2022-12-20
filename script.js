@@ -2,75 +2,120 @@ let row;
 const formEl = document.querySelector("form");
         const tbodyEl = document.querySelector("tbody");
         const tableEl = document.querySelector("table");
+        var editRowId = "";
+
+        showDataFromLocalStrorage();
+
+        /* add new item on local storage */
+
+            function addNewProduct(nom, marque, prix, date, type, promo) {
+                var productList = [];
+            
+                var product = {
+                nom: nom,
+                marque: marque,
+                prix: prix,
+                date: date,
+                type: type,
+                promo: promo
+                };
+                productList.push(product);
+                productList = productList.concat(JSON.parse(localStorage.getItem('productList')||'[]'));
+                console.log(productList);
+            
+            
+                localStorage.setItem("productList", JSON.stringify(productList));
+            };
+
+        /* End */
+
+        /* Enregistreent des données */
+
         function onAddtable(e) {
             e.preventDefault();
-            console.log("test");
             const prix = document.getElementById("prix").value;
             const nom = document.getElementById("nom").value;
             const selec = document.getElementById("selec").options[document.getElementById("selec").selectedIndex].text;
             const date = document.getElementById("date").value;
             const sele = document.getElementById("sele").options[document.getElementById("sele").selectedIndex].text;
-            let fam = ""
-            let mas = ""
+
+            let promo = "";
 
             if (document.getElementById("fam").checked)
             {
-                fam = "oui"
+                promo = "oui"
             }
             if (document.getElementById("mas").checked)
             {
-                mas = "non"
+                promo = "non"
             }
-            tbodyEl.innerHTML += `
-                <tr>
-                    <td>${nom}</td>
-                    <td>${selec}</td>
-                    <td>${prix}</td>
-                    <td>${date}</td>
-                    <td>${sele}</td>
-                    <td>${fam}${mas}</td>
-                    <td><button class="deleteBtn">Delete</button></td>
-                    <td><button class="edit">Edit</button></td>
-                    </tr>
-            `;
+
+            addNewProduct(nom, selec, prix, date, sele, promo);
+            showDataFromLocalStrorage();
+
             document.getElementById("form").reset();
             
         }
+
+        /* End */
+
+        /* Suppresion de la ligne du tableau + du local storage */
+
         function onDeleteRow(e) {
             if (!e.target.classList.contains("deleteBtn")) {
             return;
             }
-
             const btn = e.target;
-            btn.closest("tr").remove();
+
+            /* Récuperation de l'index du local storage */
+            var index = btn.getAttribute("id");
             
+            /* Récupérer les entrées du local storage */
+            var productList = JSON.parse(window.localStorage.getItem('productList'));
+
+            /* Suppression de la données depuis le tableau que on a récuperer depuis notre variable qui contient les données du local storage */
+            productList.splice(index, 1);
+
+            /* La mise à jour du local storage par notre nouvelle variable mise à jour */
+            localStorage.setItem('productList',JSON.stringify(productList));
+
+            /* Actualisation du tableau */
+            showDataFromLocalStrorage();
         }
 
-        // LES BUTTON
-        formEl.addEventListener("submit", onAddtable);
-        tableEl.addEventListener("click", onDeleteRow);
-        tableEl.addEventListener("click", editRow);
+        /* End */
+
+        /* Afficher des entrées */
+
+        function showDataFromLocalStrorage(){
+
+            /* Vider le tableau */
+            tbodyEl.innerHTML = "";
+
+            /* Récupérer les entrées du local storage */
+            var LocalStorage = JSON.parse(window.localStorage.getItem('productList'));
+
+            /* Affichage des données dans le tableau */
+            for(let i=0; i<LocalStorage.length; i++) {
+                tbodyEl.innerHTML += `
+                <tr>
+                    <td>${LocalStorage[i].nom}</td>
+                    <td>${LocalStorage[i].marque}</td>
+                    <td>${LocalStorage[i].prix}</td>
+                    <td>${LocalStorage[i].date}</td>
+                    <td>${LocalStorage[i].type}</td>
+                    <td>${LocalStorage[i].promo}</td>
+                    <td><button class="deleteBtn" id="${i}">Delete</button></td>
+                    <td><button class="edit" id="${i}">Edit</button></td>
+                </tr>
+            `;
+            }
+        }
+    
+        /* End */
         
         function editRow(e) {
-            e.preventDefault();
-            console.log("test");
-            let prix = document.getElementById("prix").value;
-            let nom = document.getElementById("nom").value;
-            let selec = document.getElementById("selec").options[document.getElementById("selec").selectedIndex].text;
-            let date = document.getElementById("date").value;
-            let sele = document.getElementById("sele").options[document.getElementById("sele").selectedIndex].text;
-            let fam = ""
-            let mas = ""
-
-            if (document.getElementById("fam").checked)
-            {
-                fam = "oui"
-            }
-            if (document.getElementById("mas").checked)
-            {
-                mas = "non"
-            }
-            
+            e.preventDefault();            
             if (!e.target.classList.contains("edit")) {
                 return;
                 }
@@ -78,6 +123,7 @@ const formEl = document.querySelector("form");
                 else 
                 {
                     const btn = e.target;
+                    editRowId = btn.getAttribute("id");
                     row = e.target.parentElement.parentElement
                 btn.closest("tr")
                 
@@ -95,107 +141,37 @@ const formEl = document.querySelector("form");
                 }
                 
         }
-        let table = document.getElementById("table"),rIndex;
-        function modifier(){
-            row.children[2].innerHTML=document.getElementById("prix").value;
-            row.children[0].innerHTML=document.getElementById("nom").value;
-            row.children[1]. innerHTML= document.getElementById("selec").options[document.getElementById("selec").selectedIndex].text ;
-            row.children[3].innerHTML=document.getElementById("date").value;
-            row.children[4].innerHTML=document.getElementById("sele").options[document.getElementById("sele").selectedIndex].text;
-            row.children[5].innerHTML= document.querySelector("[type=radio]:checked").value;
 
+        /* Modification des entrées */
+
+        function modifier(){
+
+            /* Récuperation de l'index du local storage */
+            var index = editRowId;
+
+            /* Récupérer les entrées du local storage */
+            var productList = JSON.parse(window.localStorage.getItem('productList'));
+
+            /* Modification de la données depuis le tableau que on a récuperer depuis notre variable qui contient les données du local storage */
+            productList[index].nom = document.getElementById("nom").value;
+            productList[index].marque = document.getElementById("selec").options[document.getElementById("selec").selectedIndex].text;
+            productList[index].prix = document.getElementById("prix").value;
+            productList[index].date = document.getElementById("date").value;
+            productList[index].type = document.getElementById("sele").options[document.getElementById("sele").selectedIndex].text;
+            productList[index].promo = document.querySelector("[type=radio]:checked").value;
+
+            /* La mise à jour du local storage par notre nouvelle variable mise à jour */
+            localStorage.setItem('productList',JSON.stringify(productList));
+
+            /* Actualisation du tableau */
+            showDataFromLocalStrorage();
 
         }
 
-//    VALIDATIO
-            // document.getElementById('nom').onkeyup=function(){
+        /* end */
 
-            //     var nom = document.getElementById('nom').value;
-            //     var regex = /^[a-z]{1,30}$/ig;
-            //     if(nom === '') {
-            //     document.getElementById('Name').innerHTML = 'Nom is required.';
-            //         document.getElementById('nom').style.borderColor="red";
-        
-            // } else if (regex.test(nom)) {
-            //     document.getElementById('Name').innerHTML = '';
-            //     document.getElementById('nom').style.borderColor="#09c372";
-        
-        
-            // } else if (nom.length>30){
-            //     document.getElementById('Name').innerHTML = 'where are u going';
-            //     document.getElementById('nom').style.borderColor= "red";
-        
-            // } else {
-            //     document.getElementById('Name').innerHTML = 'dont use numbers or chifre';
-            //     document.getElementById('nom').style.borderColor="red";
-        
-        
-            // }
-            // }
+        /* Les actions */
 
-            if(localStorage.product != null){
-                dataList = JSON.parse(localStorage.product);
-            }
-            else{
-                dataList = [];
-            } 
-
-            
-            function stocker(){
-
-                let newList = {
-            
-                    nom : nom.value ,
-                    selec : selec.value ,
-                    prix : prix.value ,
-                    date : date.value ,
-                    sele : sele.value ,
-                    fam : fam,
-                    mas : mas,
-                }
-            
-            
-                dataList.push(newList);
-            
-                localStorage.setItem('product' , JSON.stringify(dataList));
-            
-
-            }
-
-            function Table(){
-
-
-                let table = '';
-                for( let i = 0 ; i < dataList.length ; i++ ){
-                    table +=   ` 
-                    <tr>
-                    <td>${dataList[i].nom}</td>
-                    <td>${ dataList[i].selec}</td>
-                    <td>${ dataList[i].prix}</td>
-                    <td>${ dataList[i].date}</td>
-                    <td>${dataList[i].sele}</td>
-                    <td>${dataList[i].fam}${dataList[i].mas}</td>
-                    <td><button class="deleteBtn">Delete</button></td>
-                    <td><button class="edit">Edit</button></td>
-                    </tr>
-            `
-            }
-            
-                document.getElementById("tbody").innerHTML = table;
-            
-            }
-
-            function supprimer(i){
-                dataList.splice(i,1);
-                localStorage.product = JSON.stringify(dataList);
-                Table();
-            }
-            function clear(){
-                document.getElementById("nom").value = "";
-                document.getElementById("selec").value = "";
-                document.getElementById("date").value = "";
-                document.getElementById("prix").value = "";
-                document.getElementById("sele").value = "";
-                document.getElementById("fam").checked = false;
-                document.getElementById("mas").checked = false;
-            }
+        formEl.addEventListener("submit", onAddtable);
+        tableEl.addEventListener("click", onDeleteRow);
+        tableEl.addEventListener("click", editRow);
