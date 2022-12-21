@@ -92,23 +92,25 @@ const formEl = document.querySelector("form");
             /* Vider le tableau */
             tbodyEl.innerHTML = "";
 
-            /* Récupérer les entrées du local storage */
-            var LocalStorage = JSON.parse(window.localStorage.getItem('productList'));
-
-            /* Affichage des données dans le tableau */
-            for(let i=0; i<LocalStorage.length; i++) {
-                tbodyEl.innerHTML += `
-                <tr>
-                    <td>${LocalStorage[i].nom}</td>
-                    <td>${LocalStorage[i].marque}</td>
-                    <td>${LocalStorage[i].prix}</td>
-                    <td>${LocalStorage[i].date}</td>
-                    <td>${LocalStorage[i].type}</td>
-                    <td>${LocalStorage[i].promo}</td>
-                    <td><button class="deleteBtn" id="${i}">Delete</button></td>
-                    <td><button class="edit" id="${i}">Edit</button></td>
-                </tr>
-            `;
+            /* Tester si localStorage n'est pas vide avec notre liste dont le nom est productList */
+            if (localStorage.hasOwnProperty("productList")) {
+                /* Récupérer les entrées du local storage */
+                var LocalStorage = JSON.parse(window.localStorage.getItem('productList'));
+                /* Affichage des données dans le tableau */
+                for(let i=0; i<LocalStorage.length; i++) {
+                    tbodyEl.innerHTML += `
+                    <tr>
+                        <td>${LocalStorage[i].nom}</td>
+                        <td>${LocalStorage[i].marque}</td>
+                        <td>${LocalStorage[i].prix}</td>
+                        <td>${LocalStorage[i].date}</td>
+                        <td>${LocalStorage[i].type}</td>
+                        <td>${LocalStorage[i].promo}</td>
+                        <td><button class="deleteBtn" id="${i}">Delete</button></td>
+                        <td><button class="edit" id="${i}">Edit</button></td>
+                    </tr>
+                `;
+                }
             }
         }
     
